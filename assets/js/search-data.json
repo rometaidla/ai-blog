@@ -3,7 +3,7 @@
     
         "post0": {
             "title": "Lane Following using Comma AI dataset",
-            "content": "Introduction . Data . Methods . Results . youtube: https://youtu.be/iR3qkDQD_Pk youtube: https://youtu.be/p1wjzHW8HCY . Conclusions .",
+            "content": "Introduction . Data . [Comma AI dataset] (https://github.com/commaai/comma2k19) is used to train the model. This dataset has over 33 hours of commute in California&#39;s highway. Dataset is divided into 95% training, 5% validation and 5% test set. . Methods . Convolutional neural network defined in NVIDIA&#39;s PilotNet is used as model architecture. . Results . youtube: https://youtu.be/iR3qkDQD_Pk youtube: https://youtu.be/p1wjzHW8HCY . Conclusions .",
             "url": "https://rometaidla.github.io/ai-blog/2021/05/26/lane-following-checkpoint2.html",
             "relUrl": "/2021/05/26/lane-following-checkpoint2.html",
             "date": " • May 26, 2021"
