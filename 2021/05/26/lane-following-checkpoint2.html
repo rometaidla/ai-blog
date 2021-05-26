@@ -125,7 +125,7 @@ window.onload = wrap_img;
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Data">Data<a class="anchor-link" href="#Data"> </a></h2><p>[Comma AI dataset] (<a href="https://github.com/commaai/comma2k19">https://github.com/commaai/comma2k19</a>) is used to train the model. This dataset has over 33 hours of
+<h2 id="Data">Data<a class="anchor-link" href="#Data"> </a></h2><p><a href="https://github.com/commaai/comma2k19">Comma AI dataset</a> is used to train the model. This dataset has over 33 hours of
 commute in California's highway. Dataset is divided into 95% training, 5% validation and 5% test set.</p>
 
 </div>
@@ -134,20 +134,40 @@ commute in California's highway. Dataset is divided into 95% training, 5% valida
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Methods">Methods<a class="anchor-link" href="#Methods"> </a></h2><p>Convolutional neural network defined in <a href="https://arxiv.org/abs/1604.07316">NVIDIA's PilotNet</a> is used as model architecture.</p>
+<p>Model is trained until validation loss fails to improve for 10 epochs. Mean absolute error (MAE) is used  as loss function
+as it proved to work better compared to mean square error (MSE) loss as it magnifies errors with big steering angles too
+much.</p>
+<p>Big effort was needed to speed up training speed as training on video files is very slow, this is magnified with the need
+to access frames randomly during training. I tried to speed up the processing by using <a href="https://docs.nvidia.com/deeplearning/dali/user-guide/docs">NVIDIA DALI</a>,
+but reading video frames was still bottleneck and not GPU. Best performance was achived by extracting all frame from video
+files into JPG files with reduced resolution and training model using these.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Results">Results<a class="anchor-link" href="#Results"> </a></h2><p>youtube: <a href="https://youtu.be/iR3qkDQD_Pk">https://youtu.be/iR3qkDQD_Pk</a>
-youtube: <a href="https://youtu.be/p1wjzHW8HCY">https://youtu.be/p1wjzHW8HCY</a></p>
+<h2 id="Results">Results<a class="anchor-link" href="#Results"> </a></h2><p>Model performance using videos from validation dataset:
+
+<center>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/iR3qkDQD_Pk" frameborder="0" allowfullscreen=""></iframe>
+</center>
+
+<center>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/p1wjzHW8HCY" frameborder="0" allowfullscreen=""></iframe>
+</center>
+
+Model performance using out of distribution videos from UT dataset:
+TODO: link to video</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Learnings">Learnings<a class="anchor-link" href="#Learnings"> </a></h2><ul>
+<li>Most effort will go preparing data pipeline and not tuning model itself</li>
+</ul>
 <h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions"> </a></h2>
 </div>
 </div>
