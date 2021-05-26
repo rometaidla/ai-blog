@@ -162,8 +162,25 @@ files into JPG files with reduced resolution and training model using these.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://arxiv.org/abs/1610.02391">Grad-CAM</a> paper introduces technique for producing "visual explanations" for decisions
+from a large class of CNN-based models. There is great <a href="https://github.com/jacobgil/pytorch-grad-cam">pytorch implementation</a>
+implemented for class prediction, which is modified to work with regression problem to display activation maps.</p>
+<p>First layer seems to provides best information. Model seems to be mostly concentrating on road markings, ground under
+other cars and sides of the road:
+
+<center>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/hlQyDc7xGMc" frameborder="0" allowfullscreen=""></iframe>
+</center>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Learnings">Learnings<a class="anchor-link" href="#Learnings"> </a></h2><ul>
 <li>Most effort will go preparing data pipeline and not tuning model itself</li>
+<li>Gradient based visualisation can provide insights into how model works</li>
 </ul>
 <h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions"> </a></h2>
 </div>
