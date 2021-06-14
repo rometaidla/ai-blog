@@ -17,7 +17,9 @@ This is the first post in the series of posts on end-to-end model for autonomous
 - Imitation learning
 - NHTSA Level
 
-![EndToEnd](images/end-to-end-learning.jpg "Credit: https://twitter.com/haltakov/status/1384192583597912065")
+![]({{ site.baseurl }}/images/logo.png "fast.ai's logo")
+
+![EndToEnd]({{ site.baseurl }}images/end-to-end-learning.jpg "Credit: https://twitter.com/haltakov/status/1384192583597912065")
 
 ## Data
 
@@ -34,13 +36,13 @@ Video resolution is 1164x874. When extracting frames for training, image is down
 faster training process. From this downscaled image, smaller region of interest is cropped as most of the image does not
 in include information useful for training, like trees and sky.
 
-![RegionOfInterest](images/crop.png "Region of interest used for training is marked with red box.")
+![RegionOfInterest]({{ site.baseurl }}/images/crop.png "Region of interest used for training is marked with red box.")
 
 ### Model
 Convolutional neural network have been most succesful architectures in computer vision and it is natural choice for lane
 following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet 1.
 
-![PilotNet](images/pilotnet-architecture.png "PilotNet architecture defined in Nvidia paper")
+![PilotNet]({{ site.baseurl }}/images/pilotnet-architecture.png "PilotNet architecture defined in Nvidia paper")
 
 I used Batch normalisation instead of first static normalisation layer as I found it made training more stable,
 model trained quicker and had less variability in epochs validation losses. Also Leaky ReLU is used as activation
