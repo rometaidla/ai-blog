@@ -14,12 +14,16 @@ This is the first post in the series of posts on the topic of end-to-end model f
 
 ## Introduction
 
-End-to-End driving is predicting output command directly from input sensor, in this case predicting steering command
+In this project I will use imitation learning to teach artificial neural network to drive the car end-to-end. Model will
+predict only steering command, but controlling throttle can be achieved using similar techniques [7].
+
+**End-to-End driving** is predicting output command directly from input sensor, in this case predicting steering command
 from camera image.
 
 ![EndToEnd]({{ site.baseurl }}/images/lanefollowing/end-to-end-learning.jpg "Credit: https://twitter.com/haltakov/status/1384192583597912065")
 
-- Imitation learning 
+**Imitation learning** is supervised learning, where model is trained to mimic human behaviour. In this project model is trained
+to predict how human is steering the car on highways.
 
 ## Data
 
@@ -167,3 +171,5 @@ There are several improvements that can be done to the model:
 [5] NVIDIA Data Loading Library [https://docs.nvidia.com/deeplearning/dali/user-guide/docs](https://docs.nvidia.com/deeplearning/dali/user-guide/docs)
 
 [6] CommaAI 2k19 dataset [https://github.com/commaai/comma2k19](https://github.com/commaai/comma2k19)
+
+[7] Towards End-to-End Deep Learning for Autonomous Racing: On Data Collection and a Unified Architecture for Steering and Throttle Prediction  [https://arxiv.org/abs/2105.01799] (https://arxiv.org/abs/2105.01799)
