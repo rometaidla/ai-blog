@@ -124,9 +124,13 @@ During the night:
 from a large class of CNN-based models. There is great [pytorch implementation](https://github.com/jacobgil/pytorch-grad-cam)
 implemention for class prediction, which I modified to work with regression problem to display activation maps.
 
+![Gradcam layers]({{ site.baseurl }}/images/lanefollowing/gradcam_layers.png "Gradcam++ activation maps")
+
 First layer seems to provides best information. Model seems to be mostly concentrating on road markings, ground under
 other cars and sides of the road:
-> youtube: https://youtu.be/hlQyDc7xGMc
+> <figure class="video_container">
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/hlQyDc7xGMc?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</figure>
 
 
 ## Conclusions
