@@ -67,32 +67,57 @@ files into JPG files with reduced resolution using *ffmpeg* utility and training
 
 TODO: hyperparameter tuning
 
-## Results
-
-After training 8 epochs, although training loss was still going lower, validation loss stopped improving, so training
-was stopped with following metrics:
-
-Training loss: **0.9257**<br/>
-Validation loss: **1.258**
-
-(TODO: include graphs from W&B)
-
-Model performance using videos from validation dataset (green is true steering angle and red is predicted steering angle):
-> youtube: https://youtu.be/iR3qkDQD_Pk
-> youtube: https://youtu.be/p1wjzHW8HCY
-
 #### Data balancing
 
-Driving data is very unbalanche, most driving is done straigh or with very small steering angle. This can be seen also
+Driving data is very unbalanced, most driving is done straight or with very small steering angle. This can be seen also
 in Comma AI dataset:
 
-TODO: pic with steering angle
+![Unbalanced]({{ site.baseurl }}/images/lanefollowing/unbalanced-data.png "Comma AI dataset is very unbalances, most steering angles are near 0 degrees.")
 
-This presents problem for training neural network as it will be biased to predict small degrees and underpredict bigger
-steering angles. I test with two balanced datasets, but these did not improve results and something more clever needs to
-be done to remove the bias.
+This presents problem for training neural network as it will be biased to predict small degrees and under-predict bigger
+steering angles. I tested with two balanced datasets
 
-TODO: pics of balanced steering angles.
+![Balanced]({{ site.baseurl }}/images/lanefollowing/balanced-data.png "Balanced dataset by oversampling images with less frequent steering angles so that we get uniform distribution.") | ![Fattails]({{ site.baseurl }}/images/lanefollowing/fattails-data.png "Balanced dataset by oversampling image with less frequent steering angles so that tails of distribution are fatter.")
+
+## Results
+
+Training loss improved mostly during first 5 iteration for every data balancing variation as this dataset is quite big 
+and has similar driving data.
+
+![Train loss]({{ site.baseurl }}/images/lanefollowing/trainloss.png "Training loss")
+
+
+Similarly validation loss drops quickly and only has minor improvement afterwards. Unbalanced dataset achieves the lowest 
+validation loss already on 7th epoch and fat-tailed balanced dataset on 11th epoch. Unbalanced and fat-tails data distributions
+seem to train better and achieve lower validation loss compared to uniformly balanced dataset.
+
+![Validation loss]({{ site.baseurl }}/images/lanefollowing/valloss.png "Validation loss")
+
+
+Model trained with fat-tailed distribution got the lowest test loss of **1.107**, followed by model with unbalance
+data **1.157**. Model trained with uniform distribution got the highest test loss of **1.223**, which is probably caused
+by changing initial distribution too much and causing model to overestimate small steering angles. 
+
+Oversampling data to fat-tailed distribution seems to be promising and training
+model with even fatter tails could improve results even further. Losses were measured using only one training run and
+to get more valid comparison, several runs should be made to see the variability in results.
+
+![Test loss]({{ site.baseurl }}/images/lanefollowing/testloss.png "Test loss")
+
+Model performance during the day (green is true steering angle and red is predicted steering angle):
+<figure class="video_container">
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/iR3qkDQD_Pk?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</figure>
+
+During the evening:
+<figure class="video_container">
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/ZirSZe89fcU?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</figure>
+
+During the night:
+<figure class="video_container">
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/p1wjzHW8HCY?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</figure>
 
 ## Visualisation of network state
 [Grad-CAM](https://arxiv.org/abs/1610.02391) paper introduces technique for producing "visual explanations" for decisions
@@ -103,11 +128,17 @@ First layer seems to provides best information. Model seems to be mostly concent
 other cars and sides of the road:
 > youtube: https://youtu.be/hlQyDc7xGMc
 
-## Learnings
-- Most effort will go preparing data pipeline and not tuning model itself
-- Gradient based visualisation can provide insights into how model works
 
 ## Conclusions
+
+### Further improvements
+- Use more complex model
+- Use PilotNet with bigger input size
+- Do data augmentation
+
+### Learnings
+- Most effort will go preparing data pipeline and not tuning model itself
+- Gradient based visualisation can provide insights into how model works
 
 ## References
 
