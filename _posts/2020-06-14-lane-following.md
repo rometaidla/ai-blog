@@ -11,3 +11,10 @@ title: Lane Following using Comma-AI dataset
 This is the first post in the series of posts on end-to-end model for autonomous driving. Future posts:
 - Part 2: Using Vision Transformers with Comma AI dataset
 - Part 3: Using PilotNet model in real life on Estonian gravel roads
+
+## Introduction
+
+- Imitation learning
+- NHTSA Level
+
+![EndToEnd](images/end-to-end-learning.jpg "Credit: https://twitter.com/haltakov/status/1384192583597912065")
