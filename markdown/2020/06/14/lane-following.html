@@ -77,7 +77,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      3 min read
+      4 min read
     
 </span></p>
 
@@ -100,17 +100,21 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#data">Data</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#model">Model</a></li>
-<li class="toc-entry toc-h3"><a href="#training">Training</a></li>
-</ul>
-</li>
-<li class="toc-entry toc-h2"><a href="#results">Results</a>
+<li class="toc-entry toc-h3"><a href="#training">Training</a>
 <ul>
 <li class="toc-entry toc-h4"><a href="#data-balancing">Data balancing</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#results">Results</a></li>
 <li class="toc-entry toc-h2"><a href="#visualisation-of-network-state">Visualisation of network state</a></li>
-<li class="toc-entry toc-h2"><a href="#learnings">Learnings</a></li>
-<li class="toc-entry toc-h2"><a href="#conclusions">Conclusions</a></li>
+<li class="toc-entry toc-h2"><a href="#conclusions">Conclusions</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#further-improvements">Further improvements</a></li>
+<li class="toc-entry toc-h3"><a href="#learnings">Learnings</a></li>
+</ul>
+</li>
 <li class="toc-entry toc-h2"><a href="#references">References</a></li>
 </ul>
 </li>
@@ -217,36 +221,64 @@ files into JPG files with reduced resolution using <em>ffmpeg</em> utility and t
 
 <p>TODO: hyperparameter tuning</p>
 
-<h2 id="results">
-<a class="anchor" href="#results" aria-hidden="true"><span class="octicon octicon-link"></span></a>Results</h2>
-
-<p>After training 8 epochs, although training loss was still going lower, validation loss stopped improving, so training
-was stopped with following metrics:</p>
-
-<p>Training loss: <strong>0.9257</strong><br>
-Validation loss: <strong>1.258</strong></p>
-
-<p>(TODO: include graphs from W&amp;B)</p>
-
-<p>Model performance using videos from validation dataset (green is true steering angle and red is predicted steering angle):</p>
-<blockquote>
-  <p>youtube: https://youtu.be/iR3qkDQD_Pk
-youtube: https://youtu.be/p1wjzHW8HCY</p>
-</blockquote>
-
 <h4 id="data-balancing">
 <a class="anchor" href="#data-balancing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data balancing</h4>
 
-<p>Driving data is very unbalanche, most driving is done straigh or with very small steering angle. This can be seen also
+<p>Driving data is very unbalanced, most driving is done straight or with very small steering angle. This can be seen also
 in Comma AI dataset:</p>
 
-<p>TODO: pic with steering angle</p>
+<p><img src="/ai-blog/images/lanefollowing/unbalanced-data.png" alt="Unbalanced" title="Comma AI dataset is very unbalances, most steering angles are near 0 degrees."></p>
 
-<p>This presents problem for training neural network as it will be biased to predict small degrees and underpredict bigger
-steering angles. I test with two balanced datasets, but these did not improve results and something more clever needs to
-be done to remove the bias.</p>
+<p>This presents problem for training neural network as it will be biased to predict small degrees and under-predict bigger
+steering angles. I tested with two balanced datasets</p>
 
-<p>TODO: pics of balanced steering angles.</p>
+<table>
+  <tbody>
+    <tr>
+      <td><img src="/ai-blog/images/lanefollowing/balanced-data.png" alt="Balanced" title="Balanced dataset by oversampling images with less frequent steering angles so that we get uniform distribution."></td>
+      <td><img src="/ai-blog/images/lanefollowing/fattails-data.png" alt="Fattails" title="Balanced dataset by oversampling image with less frequent steering angles so that tails of distribution are fatter."></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="results">
+<a class="anchor" href="#results" aria-hidden="true"><span class="octicon octicon-link"></span></a>Results</h2>
+
+<p>Training loss improved mostly during first 5 iteration for every data balancing variation as this dataset is quite big 
+and has similar driving data.</p>
+
+<p><img src="/ai-blog/images/lanefollowing/trainloss.png" alt="Train loss" title="Training loss"></p>
+
+<p>Similarly validation loss drops quickly and only has minor improvement afterwards. Unbalanced dataset achieves the lowest 
+validation loss already on 7th epoch and fat-tailed balanced dataset on 11th epoch. Unbalanced and fat-tails data distributions
+seem to train better and achieve lower validation loss compared to uniformly balanced dataset.</p>
+
+<p><img src="/ai-blog/images/lanefollowing/valloss.png" alt="Validation loss" title="Validation loss"></p>
+
+<p>Model trained with fat-tailed distribution got the lowest test loss of <strong>1.107</strong>, followed by model with unbalance
+data <strong>1.157</strong>. Model trained with uniform distribution got the highest test loss of <strong>1.223</strong>, which is probably caused
+by changing initial distribution too much and causing model to overestimate small steering angles.</p>
+
+<p>Oversampling data to fat-tailed distribution seems to be promising and training
+model with even fatter tails could improve results even further. Losses were measured using only one training run and
+to get more valid comparison, several runs should be made to see the variability in results.</p>
+
+<p><img src="/ai-blog/images/lanefollowing/testloss.png" alt="Test loss" title="Test loss"></p>
+
+<p>Model performance during the day (green is true steering angle and red is predicted steering angle):</p>
+<figure class="video_container">
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/iR3qkDQD_Pk?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</figure>
+
+<p>During the evening:</p>
+<figure class="video_container">
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/ZirSZe89fcU?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</figure>
+
+<p>During the night:</p>
+<figure class="video_container">
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/p1wjzHW8HCY?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</figure>
 
 <h2 id="visualisation-of-network-state">
 <a class="anchor" href="#visualisation-of-network-state" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualisation of network state</h2>
@@ -260,15 +292,23 @@ other cars and sides of the road:</p>
   <p>youtube: https://youtu.be/hlQyDc7xGMc</p>
 </blockquote>
 
-<h2 id="learnings">
-<a class="anchor" href="#learnings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Learnings</h2>
+<h2 id="conclusions">
+<a class="anchor" href="#conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions</h2>
+
+<h3 id="further-improvements">
+<a class="anchor" href="#further-improvements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Further improvements</h3>
+<ul>
+  <li>Use more complex model</li>
+  <li>Use PilotNet with bigger input size</li>
+  <li>Do data augmentation</li>
+</ul>
+
+<h3 id="learnings">
+<a class="anchor" href="#learnings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Learnings</h3>
 <ul>
   <li>Most effort will go preparing data pipeline and not tuning model itself</li>
   <li>Gradient based visualisation can provide insights into how model works</li>
 </ul>
-
-<h2 id="conclusions">
-<a class="anchor" href="#conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions</h2>
 
 <h2 id="references">
 <a class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
