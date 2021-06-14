@@ -24,21 +24,21 @@ This is the first post in the series of posts on end-to-end model for autonomous
 [Comma AI dataset](https://github.com/commaai/comma2k19) is used to train the model. This dataset has over 33 hours of
 commute in California's highway. Dataset is divided into 95% training, 5% validation and 5% test set.
 
-Comma AI dataset contains a small sample of very difficult situations like crossroads, which are impossible to predict
-correctly using just camera images as model has no clear information whether to turn left or right. Most of these cases
-have high steering angle and make it very hard for model to converge (especially with using MSE loss). To avoid manually
-going through hours of videos, all frames with steering angle bigger than 20 degrees are removed from dataset.
-(TODO: include exact counts of frames removed)
-
 Video resolution is 1164x874. When extracting frames for training, image is downscaled to the resolution of 258x194 for
 faster training process. From this downscaled image, smaller region of interest is cropped as most of the image does not
 in include information useful for training, like trees and sky.
 
 ![RegionOfInterest]({{ site.baseurl }}/images/lanefollowing/crop.png "Region of interest used for training is marked with red box.")
 
+Comma AI dataset contains a small sample of very difficult situations like crossroads, which are impossible to predict
+correctly using just camera images as model has no clear information whether to turn left or right. Most of these cases
+have high steering angle and make it very hard for model to converge (especially with using MSE loss). To avoid manually
+going through hours of videos, all frames with steering angle bigger than 20 degrees are removed from dataset.
+(TODO: include exact counts of frames removed)
+
 ### Model
 Convolutional neural network have been most succesful architectures in computer vision and it is natural choice for lane
-following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet 1.
+following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet [1].
 
 ![PilotNet]({{ site.baseurl }}/images/lanefollowing/pilotnet-architecture.png "PilotNet architecture defined in Nvidia paper")
 
@@ -111,4 +111,4 @@ other cars and sides of the road:
 
 ## References
 
-1 Pilotnet https://arxiv.org/abs/1604.07316
+[1] Pilotnet https://arxiv.org/abs/1604.07316
