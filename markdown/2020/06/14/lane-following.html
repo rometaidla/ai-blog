@@ -77,7 +77,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      4 min read
+      5 min read
     
 </span></p>
 
@@ -166,48 +166,6 @@ following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet [
 model trained quicker and had less variability in epochs validation losses. Also Leaky ReLU is used as activation
 function for layers.</p>
 
-<table>
-  <thead>
-    <tr>
-      <th>Layer name</th>
-      <th>Output size</th>
-      <th>Number of parameters</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Convolution2D 1</td>
-      <td> </td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td>BatchNorm2D 1</td>
-      <td> </td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td>LeakyRelu 1</td>
-      <td> </td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td>Convolution2D 2</td>
-      <td> </td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td>BatchNorm2D 2</td>
-      <td> </td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td>LeakyRelu 2</td>
-      <td> </td>
-      <td> </td>
-    </tr>
-  </tbody>
-</table>
-
 <h3 id="training">
 <a class="anchor" href="#training" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training</h3>
 
@@ -266,27 +224,50 @@ to get more valid comparison, several runs should be made to see the variability
 <p><img src="/ai-blog/images/lanefollowing/testloss.png" alt="Test loss" title="Test loss"></p>
 
 <p>Model performance during the day (green is true steering angle and red is predicted steering angle):</p>
+
 <figure class="video_container">
   <iframe width="840" height="550" src="https://www.youtube.com/embed/0ZZtgRv3__c?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 </figure>
 
+<p><img src="/ai-blog/images/lanefollowing/test-steering-angles-day.png" alt="Predicted steering angles during the day" title="Predicted steering angles during the day"></p>
+
 <p>During the night:</p>
 <figure class="video_container">
-  <iframe width="840" height="550" src="https://www.youtube.com/embed/VQ7BT5ZxkIc?start=10&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/VQ7BT5ZxkIc?start=0&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 </figure>
+
+<p><img src="/ai-blog/images/lanefollowing/test-steering-angles-night.png" alt="Predicted steering angles during the night" title="Predicted steering angles during during the night"></p>
 
 <h2 id="visualisation-of-network-state">
 <a class="anchor" href="#visualisation-of-network-state" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualisation of network state</h2>
-<p><a href="https://arxiv.org/abs/1610.02391">Grad-CAM</a> paper introduces technique for producing “visual explanations” for decisions
-from a large class of CNN-based models. There is great <a href="https://github.com/jacobgil/pytorch-grad-cam">pytorch implementation</a>
-implemention for class prediction, which I modified to work with regression problem to display activation maps.</p>
+<p><a href="https://arxiv.org/abs/1610.02391">Grad-CAM</a> paper [2] introduces technique for producing “visual explanations” for decisions
+from a large class of CNN-based models. It is technique for visualising importance of image feature to the final output
+of the network. There is great <a href="https://github.com/jacobgil/pytorch-grad-cam">pytorch implementation</a> of these gradient based methods.</p>
 
-<p><img src="/ai-blog/images/lanefollowing/gradcam_layers.png" alt="Gradcam layers" title="Gradcam++ activation maps"></p>
+<p>As this technique is for classification problem and predicting steering angle is regression problem, I modified the implementation 
+to work with regression problem by using ideas from Jacob Gildenblat blog [4]. Target steering angles are divided into 3 ranges,
+turning strong to the left (big positive steering angles), turning strongly the right (big negative steering angles) and driving straight
+(small steering angles).This makes it classification problem again. When steering angle are big, image features contributing 
+most to big steering angles are peaked. When steering angle is small, image features contributing mostly to small steering 
+angle by taking inverse of steering angle as our target.</p>
 
-<p>First layer seems to provides best information. Model seems to be mostly concentrating on road markings, ground under
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">grad_cam_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">2.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">elif</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">x</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="p">.</span><span class="n">reciprocal</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">cpu</span><span class="p">())</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">sign</span><span class="p">(</span><span class="n">angle</span><span class="p">.</span><span class="n">cpu</span><span class="p">())</span>
+</code></pre></div></div>
+
+<p>By resulting activation maps for each convolutional layer are following:</p>
+
+<p><img src="/ai-blog/images/lanefollowing/gradcam_layers.png" alt="Gradcam layers" title="Gradcam activation maps"></p>
+
+<p>First layer seems to provide the best information. Model seems to be mostly concentrating on road markings, ground under
 other cars and sides of the road:</p>
 <figure class="video_container">
-  <iframe width="840" height="550" src="https://www.youtube.com/embed/hlQyDc7xGMc?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/hlQyDc7xGMc?controls=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 </figure>
 
 <h2 id="conclusions">
@@ -310,7 +291,13 @@ other cars and sides of the road:</p>
 <h2 id="references">
 <a class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
 
-<p>[1] Pilotnet https://arxiv.org/abs/1604.07316</p>
+<p>[1] End to End Learning for Self-Driving Cars <a href="https://arxiv.org/abs/1604.07316">https://arxiv.org/abs/1604.07316</a></p>
+
+<p>[2] Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization <a href="https://arxiv.org/abs/1610.02391">https://arxiv.org/abs/1610.02391</a></p>
+
+<p>[3] Class Activation Map methods implemented in Pytorch <a href="https://github.com/jacobgil/pytorch-grad-cam">https://github.com/jacobgil/pytorch-grad-cam</a></p>
+
+<p>[4] Visualizations for regressing wheel steering angles in self driving cars, Jacob Gildenblat <a href="https://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations">https://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations</a></p>
 
   </div><a class="u-url" href="/ai-blog/markdown/2020/06/14/lane-following.html" hidden></a>
 </article>
