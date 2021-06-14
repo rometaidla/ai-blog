@@ -106,17 +106,12 @@ to get more valid comparison, several runs should be made to see the variability
 
 Model performance during the day (green is true steering angle and red is predicted steering angle):
 <figure class="video_container">
-  <iframe width="840" height="550" src="https://www.youtube.com/embed/iR3qkDQD_Pk?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</figure>
-
-During the evening:
-<figure class="video_container">
-  <iframe width="840" height="550" src="https://www.youtube.com/embed/ZirSZe89fcU?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/0ZZtgRv3__c?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </figure>
 
 During the night:
 <figure class="video_container">
-  <iframe width="840" height="550" src="https://www.youtube.com/embed/p1wjzHW8HCY?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/VQ7BT5ZxkIc?start=10&controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </figure>
 
 ## Visualisation of network state
