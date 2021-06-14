@@ -77,7 +77,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      5 min read
+      6 min read
     
 </span></p>
 
@@ -122,14 +122,16 @@ window.onload = wrap_img;
 <h2 id="introduction">
 <a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 
-<p>End-to-End driving is predicting output command directly from input sensor, in this case predicting steering command
+<p>In this project I will use imitation learning to teach artificial neural network to drive the car end-to-end. Model will
+predict only steering command, but controlling throttle can be achieved using similar techniques [7].</p>
+
+<p><strong>End-to-End driving</strong> is predicting output command directly from input sensor, in this case predicting steering command
 from camera image.</p>
 
 <p><img src="/ai-blog/images/lanefollowing/end-to-end-learning.jpg" alt="EndToEnd" title="Credit: https://twitter.com/haltakov/status/1384192583597912065"></p>
 
-<ul>
-  <li>Imitation learning</li>
-</ul>
+<p><strong>Imitation learning</strong> is supervised learning, where model is trained to mimic human behaviour. In this project model is trained
+to predict how human is steering the car on highways.</p>
 
 <h2 id="data">
 <a class="anchor" href="#data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data</h2>
@@ -292,6 +294,8 @@ can provide insights into how model works and what parts of input image are impo
 <p>[5] NVIDIA Data Loading Library <a href="https://docs.nvidia.com/deeplearning/dali/user-guide/docs">https://docs.nvidia.com/deeplearning/dali/user-guide/docs</a></p>
 
 <p>[6] CommaAI 2k19 dataset <a href="https://github.com/commaai/comma2k19">https://github.com/commaai/comma2k19</a></p>
+
+<p>[7] Towards End-to-End Deep Learning for Autonomous Racing: On Data Collection and a Unified Architecture for Steering and Throttle Prediction  [https://arxiv.org/abs/2105.01799] (https://arxiv.org/abs/2105.01799)</p>
 
   </div><a class="u-url" href="/ai-blog/markdown/2020/06/14/lane-following.html" hidden></a>
 </article>
