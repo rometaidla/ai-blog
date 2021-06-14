@@ -139,22 +139,22 @@ window.onload = wrap_img;
 <p><a href="https://github.com/commaai/comma2k19">Comma AI dataset</a> is used to train the model. This dataset has over 33 hours of
 commute in California’s highway. Dataset is divided into 95% training, 5% validation and 5% test set.</p>
 
-<p>Comma AI dataset contains a small sample of very difficult situations like crossroads, which are impossible to predict
-correctly using just camera images as model has no clear information whether to turn left or right. Most of these cases
-have high steering angle and make it very hard for model to converge (especially with using MSE loss). To avoid manually
-going through hours of videos, all frames with steering angle bigger than 20 degrees are removed from dataset.
-(TODO: include exact counts of frames removed)</p>
-
 <p>Video resolution is 1164x874. When extracting frames for training, image is downscaled to the resolution of 258x194 for
 faster training process. From this downscaled image, smaller region of interest is cropped as most of the image does not
 in include information useful for training, like trees and sky.</p>
 
 <p><img src="/ai-blog/images/lanefollowing/crop.png" alt="RegionOfInterest" title="Region of interest used for training is marked with red box."></p>
 
+<p>Comma AI dataset contains a small sample of very difficult situations like crossroads, which are impossible to predict
+correctly using just camera images as model has no clear information whether to turn left or right. Most of these cases
+have high steering angle and make it very hard for model to converge (especially with using MSE loss). To avoid manually
+going through hours of videos, all frames with steering angle bigger than 20 degrees are removed from dataset.
+(TODO: include exact counts of frames removed)</p>
+
 <h3 id="model">
 <a class="anchor" href="#model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model</h3>
 <p>Convolutional neural network have been most succesful architectures in computer vision and it is natural choice for lane
-following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet 1.</p>
+following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet [1].</p>
 
 <p><img src="/ai-blog/images/lanefollowing/pilotnet-architecture.png" alt="PilotNet" title="PilotNet architecture defined in Nvidia paper"></p>
 
@@ -273,7 +273,7 @@ other cars and sides of the road:</p>
 <h2 id="references">
 <a class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
 
-<p>1 Pilotnet https://arxiv.org/abs/1604.07316</p>
+<p>[1] Pilotnet https://arxiv.org/abs/1604.07316</p>
 
   </div><a class="u-url" href="/ai-blog/markdown/2020/06/14/lane-following.html" hidden></a>
 </article>
