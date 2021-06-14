@@ -1,30 +1,32 @@
 ---
 toc: true
 layout: post
-description: Lane Following using Comma-AI dataset.
+description: Training end-to-end driving model using Nvidia PilotNet architecture and CommaAI dataset.
 categories: [markdown]
-title: Lane Following using Comma-AI dataset
+title: End-to-end Driving using Comma AI dataset
 ---
 
-# Part 1: Lane Following using Comma AI dataset
+# Part 1: End-to-end Driving using Comma AI dataset
 
-This is the first post in the series of posts on end-to-end model for autonomous driving. Future posts:
-- Part 2: Using Vision Transformers with Comma AI dataset
-- Part 3: Using PilotNet model in real life on Estonian gravel roads
+This is the first post in the series of posts on the topic of end-to-end model for autonomous driving. Future posts:
+- Part 2: Using PilotNet model in real car on Estonian gravel roads
+- Part 3: Using Vision Transformers with Comma AI dataset
 
 ## Introduction
 
-- Imitation learning
-- NHTSA Level
+End-to-End driving is predicting output command directly from input sensor, in this case predicting steering command
+from camera image.
 
 ![EndToEnd]({{ site.baseurl }}/images/lanefollowing/end-to-end-learning.jpg "Credit: https://twitter.com/haltakov/status/1384192583597912065")
 
+- Imitation learning 
+
 ## Data
 
-[Comma AI dataset](https://github.com/commaai/comma2k19) is used to train the model. This dataset has over 33 hours of
-commute in California's highway. Dataset is divided into 95% training, 5% validation and 5% test set.
+[Comma AI dataset](https://github.com/commaai/comma2k19) [6] is used to train the model. This dataset has over **33 hours** of
+commute on California's highway. I divided dataset into 95% training, 5% validation and 5% test set.
 
-Video resolution is 1164x874. When extracting frames for training, image is downscaled to the resolution of 258x194 for
+Video resolution is 1164x874. When extracting frames for training, image is downscaled to the resolution of **258x194** for
 faster training process. From this downscaled image, smaller region of interest is cropped as most of the image does not
 in include information useful for training, like trees and sky.
 
@@ -48,17 +50,17 @@ function for layers.
 
 ### Training
 
-Model is trained until validation loss fails to improve for 10 epochs. Mean absolute error (MAE) is used  as loss function
+Big effort was needed to speed up training speed as training on video files is very slow, this is magnified with the need
+to access frames randomly during training. I tried to speed up the processing by using [NVIDIA DALI](https://docs.nvidia.com/deeplearning/dali/user-guide/docs) [5],
+but reading video frames was still bottleneck and not GPU. The best performance was achieved by extracting all frame from video
+files into JPG files with reduced resolution using *ffmpeg* utility and training model using these. When training using
+extracted images, one epoch (around 30 hours of driving) takes around 30 minutes, instead of several hours when using video
+based solutions.
+
+Model is trained until validation loss fails to improve for 10 epochs. Mean absolute error (MAE) is used as the loss function
 as it proved to work better compared to mean square error (MSE) loss as it does not magnify errors with big steering angles.
 
-Big effort was needed to speed up training speed as training on video files is very slow, this is magnified with the need
-to access frames randomly during training. I tried to speed up the processing by using [NVIDIA DALI](https://docs.nvidia.com/deeplearning/dali/user-guide/docs),
-but reading video frames was still bottleneck and not GPU. The best performance was achieved by extracting all frame from video
-files into JPG files with reduced resolution using *ffmpeg* utility and training model using these.
-
-TODO: hyperparameter tuning
-
-#### Data balancing
+### Data balancing
 
 Driving data is very unbalanced, most driving is done straight or with very small steering angle. This can be seen also
 in Comma AI dataset:
@@ -76,7 +78,6 @@ Training loss improved mostly during first 5 iteration for every data balancing 
 and has similar driving data.
 
 ![Train loss]({{ site.baseurl }}/images/lanefollowing/trainloss.png "Training loss")
-
 
 Similarly validation loss drops quickly and only has minor improvement afterwards. Unbalanced dataset achieves the lowest 
 validation loss already on 7th epoch and fat-tailed balanced dataset on 11th epoch. Unbalanced and fat-tails data distributions
@@ -144,14 +145,14 @@ other cars and sides of the road:
 
 ## Conclusions
 
-### Further improvements
-- Use more complex model
-- Use PilotNet with bigger input size
-- Do data augmentation
+Most effort will go preparing data pipeline and making it fast enough, not tuning model itself. Simple convolutional neural
+network like PilotNet is quite good at learning simple lane following using camera images. Gradient based visualisations 
+can provide insights into how model works and what parts of input image are important for the model.
 
-### Learnings
-- Most effort will go preparing data pipeline and not tuning model itself
-- Gradient based visualisation can provide insights into how model works
+There are several improvements that can be done to the model:
+- Use more complex model (Resnet, Vision Transformers)
+- Use PilotNet with bigger input image size
+- Do data augmentation for concurring with the distribution shift problem
 
 ## References
 
@@ -162,3 +163,7 @@ other cars and sides of the road:
 [3] Class Activation Map methods implemented in Pytorch [https://github.com/jacobgil/pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)
 
 [4] Visualizations for regressing wheel steering angles in self driving cars, Jacob Gildenblat [https://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations](https://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations)
+
+[5] NVIDIA Data Loading Library [https://docs.nvidia.com/deeplearning/dali/user-guide/docs](https://docs.nvidia.com/deeplearning/dali/user-guide/docs)
+
+[6] CommaAI 2k19 dataset [https://github.com/commaai/comma2k19](https://github.com/commaai/comma2k19)
