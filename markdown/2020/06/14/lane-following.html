@@ -4,19 +4,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Lane Following using Comma-AI dataset | Just another AI blog</title>
+<title>End-to-end Driving using Comma AI dataset | Just another AI blog</title>
 <meta name="generator" content="Jekyll v4.1.1" />
-<meta property="og:title" content="Lane Following using Comma-AI dataset" />
+<meta property="og:title" content="End-to-end Driving using Comma AI dataset" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Lane Following using Comma-AI dataset." />
-<meta property="og:description" content="Lane Following using Comma-AI dataset." />
+<meta name="description" content="Training end-to-end driving model using Nvidia PilotNet architecture and CommaAI dataset." />
+<meta property="og:description" content="Training end-to-end driving model using Nvidia PilotNet architecture and CommaAI dataset." />
 <link rel="canonical" href="https://rometaidla.github.io/ai-blog/markdown/2020/06/14/lane-following.html" />
 <meta property="og:url" content="https://rometaidla.github.io/ai-blog/markdown/2020/06/14/lane-following.html" />
 <meta property="og:site_name" content="Just another AI blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-06-14T00:00:00-05:00" />
 <script type="application/ld+json">
-{"description":"Lane Following using Comma-AI dataset.","url":"https://rometaidla.github.io/ai-blog/markdown/2020/06/14/lane-following.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://rometaidla.github.io/ai-blog/markdown/2020/06/14/lane-following.html"},"headline":"Lane Following using Comma-AI dataset","dateModified":"2020-06-14T00:00:00-05:00","datePublished":"2020-06-14T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"description":"Training end-to-end driving model using Nvidia PilotNet architecture and CommaAI dataset.","url":"https://rometaidla.github.io/ai-blog/markdown/2020/06/14/lane-following.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://rometaidla.github.io/ai-blog/markdown/2020/06/14/lane-following.html"},"headline":"End-to-end Driving using Comma AI dataset","dateModified":"2020-06-14T00:00:00-05:00","datePublished":"2020-06-14T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/ai-blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://rometaidla.github.io/ai-blog/feed.xml" title="Just another AI blog" /><link rel="shortcut icon" type="image/x-icon" href="/ai-blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -71,7 +71,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Lane Following using Comma-AI dataset</h1><p class="page-description">Lane Following using Comma-AI dataset.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-06-14T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">End-to-end Driving using Comma AI dataset</h1><p class="page-description">Training end-to-end driving model using Nvidia PilotNet architecture and CommaAI dataset.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-06-14T00:00:00-05:00" itemprop="datePublished">
         Jun 14, 2020
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -94,56 +94,50 @@ window.onload = wrap_img;
 
   <div class="post-content e-content" itemprop="articleBody">
     <ul class="section-nav">
-<li class="toc-entry toc-h1"><a href="#part-1-lane-following-using-comma-ai-dataset">Part 1: Lane Following using Comma AI dataset</a>
+<li class="toc-entry toc-h1"><a href="#part-1-end-to-end-driving-using-comma-ai-dataset">Part 1: End-to-end Driving using Comma AI dataset</a>
 <ul>
 <li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
 <li class="toc-entry toc-h2"><a href="#data">Data</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#model">Model</a></li>
-<li class="toc-entry toc-h3"><a href="#training">Training</a>
-<ul>
-<li class="toc-entry toc-h4"><a href="#data-balancing">Data balancing</a></li>
-</ul>
-</li>
+<li class="toc-entry toc-h3"><a href="#training">Training</a></li>
+<li class="toc-entry toc-h3"><a href="#data-balancing">Data balancing</a></li>
 </ul>
 </li>
 <li class="toc-entry toc-h2"><a href="#results">Results</a></li>
 <li class="toc-entry toc-h2"><a href="#visualisation-of-network-state">Visualisation of network state</a></li>
-<li class="toc-entry toc-h2"><a href="#conclusions">Conclusions</a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#further-improvements">Further improvements</a></li>
-<li class="toc-entry toc-h3"><a href="#learnings">Learnings</a></li>
-</ul>
-</li>
+<li class="toc-entry toc-h2"><a href="#conclusions">Conclusions</a></li>
 <li class="toc-entry toc-h2"><a href="#references">References</a></li>
 </ul>
 </li>
-</ul><h1 id="part-1-lane-following-using-comma-ai-dataset">
-<a class="anchor" href="#part-1-lane-following-using-comma-ai-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Part 1: Lane Following using Comma AI dataset</h1>
+</ul><h1 id="part-1-end-to-end-driving-using-comma-ai-dataset">
+<a class="anchor" href="#part-1-end-to-end-driving-using-comma-ai-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Part 1: End-to-end Driving using Comma AI dataset</h1>
 
-<p>This is the first post in the series of posts on end-to-end model for autonomous driving. Future posts:</p>
+<p>This is the first post in the series of posts on the topic of end-to-end model for autonomous driving. Future posts:</p>
 <ul>
-  <li>Part 2: Using Vision Transformers with Comma AI dataset</li>
-  <li>Part 3: Using PilotNet model in real life on Estonian gravel roads</li>
+  <li>Part 2: Using PilotNet model in real car on Estonian gravel roads</li>
+  <li>Part 3: Using Vision Transformers with Comma AI dataset</li>
 </ul>
 
 <h2 id="introduction">
 <a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 
-<ul>
-  <li>Imitation learning</li>
-  <li>NHTSA Level</li>
-</ul>
+<p>End-to-End driving is predicting output command directly from input sensor, in this case predicting steering command
+from camera image.</p>
 
 <p><img src="/ai-blog/images/lanefollowing/end-to-end-learning.jpg" alt="EndToEnd" title="Credit: https://twitter.com/haltakov/status/1384192583597912065"></p>
+
+<ul>
+  <li>Imitation learning</li>
+</ul>
 
 <h2 id="data">
 <a class="anchor" href="#data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data</h2>
 
-<p><a href="https://github.com/commaai/comma2k19">Comma AI dataset</a> is used to train the model. This dataset has over 33 hours of
-commute in California’s highway. Dataset is divided into 95% training, 5% validation and 5% test set.</p>
+<p><a href="https://github.com/commaai/comma2k19">Comma AI dataset</a> [6] is used to train the model. This dataset has over <strong>33 hours</strong> of
+commute on California’s highway. I divided dataset into 95% training, 5% validation and 5% test set.</p>
 
-<p>Video resolution is 1164x874. When extracting frames for training, image is downscaled to the resolution of 258x194 for
+<p>Video resolution is 1164x874. When extracting frames for training, image is downscaled to the resolution of <strong>258x194</strong> for
 faster training process. From this downscaled image, smaller region of interest is cropped as most of the image does not
 in include information useful for training, like trees and sky.</p>
 
@@ -169,18 +163,18 @@ function for layers.</p>
 <h3 id="training">
 <a class="anchor" href="#training" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training</h3>
 
-<p>Model is trained until validation loss fails to improve for 10 epochs. Mean absolute error (MAE) is used  as loss function
+<p>Big effort was needed to speed up training speed as training on video files is very slow, this is magnified with the need
+to access frames randomly during training. I tried to speed up the processing by using <a href="https://docs.nvidia.com/deeplearning/dali/user-guide/docs">NVIDIA DALI</a> [5],
+but reading video frames was still bottleneck and not GPU. The best performance was achieved by extracting all frame from video
+files into JPG files with reduced resolution using <em>ffmpeg</em> utility and training model using these. When training using
+extracted images, one epoch (around 30 hours of driving) takes around 30 minutes, instead of several hours when using video
+based solutions.</p>
+
+<p>Model is trained until validation loss fails to improve for 10 epochs. Mean absolute error (MAE) is used as the loss function
 as it proved to work better compared to mean square error (MSE) loss as it does not magnify errors with big steering angles.</p>
 
-<p>Big effort was needed to speed up training speed as training on video files is very slow, this is magnified with the need
-to access frames randomly during training. I tried to speed up the processing by using <a href="https://docs.nvidia.com/deeplearning/dali/user-guide/docs">NVIDIA DALI</a>,
-but reading video frames was still bottleneck and not GPU. The best performance was achieved by extracting all frame from video
-files into JPG files with reduced resolution using <em>ffmpeg</em> utility and training model using these.</p>
-
-<p>TODO: hyperparameter tuning</p>
-
-<h4 id="data-balancing">
-<a class="anchor" href="#data-balancing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data balancing</h4>
+<h3 id="data-balancing">
+<a class="anchor" href="#data-balancing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data balancing</h3>
 
 <p>Driving data is very unbalanced, most driving is done straight or with very small steering angle. This can be seen also
 in Comma AI dataset:</p>
@@ -273,19 +267,15 @@ other cars and sides of the road:</p>
 <h2 id="conclusions">
 <a class="anchor" href="#conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions</h2>
 
-<h3 id="further-improvements">
-<a class="anchor" href="#further-improvements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Further improvements</h3>
-<ul>
-  <li>Use more complex model</li>
-  <li>Use PilotNet with bigger input size</li>
-  <li>Do data augmentation</li>
-</ul>
+<p>Most effort will go preparing data pipeline and making it fast enough, not tuning model itself. Simple convolutional neural
+network like PilotNet is quite good at learning simple lane following using camera images. Gradient based visualisations 
+can provide insights into how model works and what parts of input image are important for the model.</p>
 
-<h3 id="learnings">
-<a class="anchor" href="#learnings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Learnings</h3>
+<p>There are several improvements that can be done to the model:</p>
 <ul>
-  <li>Most effort will go preparing data pipeline and not tuning model itself</li>
-  <li>Gradient based visualisation can provide insights into how model works</li>
+  <li>Use more complex model (Resnet, Vision Transformers)</li>
+  <li>Use PilotNet with bigger input image size</li>
+  <li>Do data augmentation for concurring with the distribution shift problem</li>
 </ul>
 
 <h2 id="references">
@@ -298,6 +288,10 @@ other cars and sides of the road:</p>
 <p>[3] Class Activation Map methods implemented in Pytorch <a href="https://github.com/jacobgil/pytorch-grad-cam">https://github.com/jacobgil/pytorch-grad-cam</a></p>
 
 <p>[4] Visualizations for regressing wheel steering angles in self driving cars, Jacob Gildenblat <a href="https://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations">https://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations</a></p>
+
+<p>[5] NVIDIA Data Loading Library <a href="https://docs.nvidia.com/deeplearning/dali/user-guide/docs">https://docs.nvidia.com/deeplearning/dali/user-guide/docs</a></p>
+
+<p>[6] CommaAI 2k19 dataset <a href="https://github.com/commaai/comma2k19">https://github.com/commaai/comma2k19</a></p>
 
   </div><a class="u-url" href="/ai-blog/markdown/2020/06/14/lane-following.html" hidden></a>
 </article>
