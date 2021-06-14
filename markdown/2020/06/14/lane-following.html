@@ -131,7 +131,9 @@ window.onload = wrap_img;
   <li>NHTSA Level</li>
 </ul>
 
-<p><img src="images/end-to-end-learning.jpg" alt="EndToEnd" title="Credit: https://twitter.com/haltakov/status/1384192583597912065"></p>
+<p><img src="/ai-blog/images/logo.png" alt="" title="fast.ai's logo"></p>
+
+<p><img src="/ai-blogimages/end-to-end-learning.jpg" alt="EndToEnd" title="Credit: https://twitter.com/haltakov/status/1384192583597912065"></p>
 
 <h2 id="data">
 <a class="anchor" href="#data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data</h2>
@@ -149,14 +151,14 @@ going through hours of videos, all frames with steering angle bigger than 20 deg
 faster training process. From this downscaled image, smaller region of interest is cropped as most of the image does not
 in include information useful for training, like trees and sky.</p>
 
-<p><img src="images/crop.png" alt="RegionOfInterest" title="Region of interest used for training is marked with red box."></p>
+<p><img src="/ai-blog/images/crop.png" alt="RegionOfInterest" title="Region of interest used for training is marked with red box."></p>
 
 <h3 id="model">
 <a class="anchor" href="#model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model</h3>
 <p>Convolutional neural network have been most succesful architectures in computer vision and it is natural choice for lane
 following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet 1.</p>
 
-<p><img src="images/pilotnet-architecture.png" alt="PilotNet" title="PilotNet architecture defined in Nvidia paper"></p>
+<p><img src="/ai-blog/images/pilotnet-architecture.png" alt="PilotNet" title="PilotNet architecture defined in Nvidia paper"></p>
 
 <p>I used Batch normalisation instead of first static normalisation layer as I found it made training more stable,
 model trained quicker and had less variability in epochs validation losses. Also Leaky ReLU is used as activation
