@@ -46,15 +46,6 @@ I used Batch normalisation instead of first static normalisation layer as I foun
 model trained quicker and had less variability in epochs validation losses. Also Leaky ReLU is used as activation
 function for layers.
 
-|Layer name|Output size|Number of parameters|
-|---|---|---|
-|Convolution2D 1|   |   |
-|BatchNorm2D 1|   |   |
-|LeakyRelu 1|   |   |
-|Convolution2D 2|   |   |
-|BatchNorm2D 2|   |   |
-|LeakyRelu 2|   |   |
-
 ### Training
 
 Model is trained until validation loss fails to improve for 10 epochs. Mean absolute error (MAE) is used  as loss function
@@ -105,28 +96,51 @@ to get more valid comparison, several runs should be made to see the variability
 ![Test loss]({{ site.baseurl }}/images/lanefollowing/testloss.png "Test loss")
 
 Model performance during the day (green is true steering angle and red is predicted steering angle):
+
 <figure class="video_container">
   <iframe width="840" height="550" src="https://www.youtube.com/embed/0ZZtgRv3__c?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </figure>
 
+![Predicted steering angles during the day]({{ site.baseurl }}/images/lanefollowing/test-steering-angles-day.png "Predicted steering angles during the day")
+
 During the night:
 <figure class="video_container">
-  <iframe width="840" height="550" src="https://www.youtube.com/embed/VQ7BT5ZxkIc?start=10&controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/VQ7BT5ZxkIc?start=0&controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </figure>
+
+![Predicted steering angles during the night]({{ site.baseurl }}/images/lanefollowing/test-steering-angles-night.png "Predicted steering angles during during the night")
 
 ## Visualisation of network state
-[Grad-CAM](https://arxiv.org/abs/1610.02391) paper introduces technique for producing "visual explanations" for decisions
-from a large class of CNN-based models. There is great [pytorch implementation](https://github.com/jacobgil/pytorch-grad-cam)
-implemention for class prediction, which I modified to work with regression problem to display activation maps.
+[Grad-CAM](https://arxiv.org/abs/1610.02391) paper [2] introduces technique for producing "visual explanations" for decisions
+from a large class of CNN-based models. It is technique for visualising importance of image feature to the final output
+of the network. There is great [pytorch implementation](https://github.com/jacobgil/pytorch-grad-cam) of these gradient based methods. 
 
-![Gradcam layers]({{ site.baseurl }}/images/lanefollowing/gradcam_layers.png "Gradcam++ activation maps")
+As this technique is for classification problem and predicting steering angle is regression problem, I modified the implementation 
+to work with regression problem by using ideas from Jacob Gildenblat blog [4]. Target steering angles are divided into 3 ranges,
+turning strong to the left (big positive steering angles), turning strongly the right (big negative steering angles) and driving straight
+(small steering angles).This makes it classification problem again. When steering angle are big, image features contributing 
+most to big steering angles are peaked. When steering angle is small, image features contributing mostly to small steering 
+angle by taking inverse of steering angle as our target.
 
-First layer seems to provides best information. Model seems to be mostly concentrating on road markings, ground under
+```python
+def grad_cam_loss(self, x, angle):
+    if angle > 2.0:
+        return x
+    elif angle < -2.0:
+        return -x
+    else:
+        return torch.reciprocal(x.cpu()) * np.sign(angle.cpu())
+```
+
+By resulting activation maps for each convolutional layer are following:
+
+![Gradcam layers]({{ site.baseurl }}/images/lanefollowing/gradcam_layers.png "Gradcam activation maps")
+
+First layer seems to provide the best information. Model seems to be mostly concentrating on road markings, ground under
 other cars and sides of the road:
 <figure class="video_container">
-  <iframe width="840" height="550" src="https://www.youtube.com/embed/hlQyDc7xGMc?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe width="840" height="550" src="https://www.youtube.com/embed/hlQyDc7xGMc?controls=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </figure>
-
 
 ## Conclusions
 
@@ -141,4 +155,10 @@ other cars and sides of the road:
 
 ## References
 
-[1] Pilotnet https://arxiv.org/abs/1604.07316
+[1] End to End Learning for Self-Driving Cars [https://arxiv.org/abs/1604.07316](https://arxiv.org/abs/1604.07316)
+
+[2] Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization [https://arxiv.org/abs/1610.02391](https://arxiv.org/abs/1610.02391)
+
+[3] Class Activation Map methods implemented in Pytorch [https://github.com/jacobgil/pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)
+
+[4] Visualizations for regressing wheel steering angles in self driving cars, Jacob Gildenblat [https://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations](https://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations)
