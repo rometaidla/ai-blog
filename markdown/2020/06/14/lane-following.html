@@ -77,7 +77,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      1 min read
+      3 min read
     
 </span></p>
 
@@ -97,6 +97,21 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h1"><a href="#part-1-lane-following-using-comma-ai-dataset">Part 1: Lane Following using Comma AI dataset</a>
 <ul>
 <li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h2"><a href="#data">Data</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#model">Model</a></li>
+<li class="toc-entry toc-h3"><a href="#training">Training</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#results">Results</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#data-balancing">Data balancing</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#visualisation-of-network-state">Visualisation of network state</a></li>
+<li class="toc-entry toc-h2"><a href="#learnings">Learnings</a></li>
+<li class="toc-entry toc-h2"><a href="#conclusions">Conclusions</a></li>
+<li class="toc-entry toc-h2"><a href="#references">References</a></li>
 </ul>
 </li>
 </ul><h1 id="part-1-lane-following-using-comma-ai-dataset">
@@ -117,6 +132,148 @@ window.onload = wrap_img;
 </ul>
 
 <p><img src="images/end-to-end-learning.jpg" alt="EndToEnd" title="Credit: https://twitter.com/haltakov/status/1384192583597912065"></p>
+
+<h2 id="data">
+<a class="anchor" href="#data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data</h2>
+
+<p><a href="https://github.com/commaai/comma2k19">Comma AI dataset</a> is used to train the model. This dataset has over 33 hours of
+commute in California’s highway. Dataset is divided into 95% training, 5% validation and 5% test set.</p>
+
+<p>Comma AI dataset contains a small sample of very difficult situations like crossroads, which are impossible to predict
+correctly using just camera images as model has no clear information whether to turn left or right. Most of these cases
+have high steering angle and make it very hard for model to converge (especially with using MSE loss). To avoid manually
+going through hours of videos, all frames with steering angle bigger than 20 degrees are removed from dataset.
+(TODO: include exact counts of frames removed)</p>
+
+<p>Video resolution is 1164x874. When extracting frames for training, image is downscaled to the resolution of 258x194 for
+faster training process. From this downscaled image, smaller region of interest is cropped as most of the image does not
+in include information useful for training, like trees and sky.</p>
+
+<p><img src="images/crop.png" alt="RegionOfInterest" title="Region of interest used for training is marked with red box."></p>
+
+<h3 id="model">
+<a class="anchor" href="#model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model</h3>
+<p>Convolutional neural network have been most succesful architectures in computer vision and it is natural choice for lane
+following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet 1.</p>
+
+<p><img src="images/pilotnet-architecture.png" alt="PilotNet" title="PilotNet architecture defined in Nvidia paper"></p>
+
+<p>I used Batch normalisation instead of first static normalisation layer as I found it made training more stable,
+model trained quicker and had less variability in epochs validation losses. Also Leaky ReLU is used as activation
+function for layers.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Layer name</th>
+      <th>Output size</th>
+      <th>Number of parameters</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Convolution2D 1</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>BatchNorm2D 1</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>LeakyRelu 1</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Convolution2D 2</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>BatchNorm2D 2</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>LeakyRelu 2</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="training">
+<a class="anchor" href="#training" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training</h3>
+
+<p>Model is trained until validation loss fails to improve for 10 epochs. Mean absolute error (MAE) is used  as loss function
+as it proved to work better compared to mean square error (MSE) loss as it does not magnify errors with big steering angles.</p>
+
+<p>Big effort was needed to speed up training speed as training on video files is very slow, this is magnified with the need
+to access frames randomly during training. I tried to speed up the processing by using <a href="https://docs.nvidia.com/deeplearning/dali/user-guide/docs">NVIDIA DALI</a>,
+but reading video frames was still bottleneck and not GPU. The best performance was achieved by extracting all frame from video
+files into JPG files with reduced resolution using <em>ffmpeg</em> utility and training model using these.</p>
+
+<p>TODO: hyperparameter tuning</p>
+
+<h2 id="results">
+<a class="anchor" href="#results" aria-hidden="true"><span class="octicon octicon-link"></span></a>Results</h2>
+
+<p>After training 8 epochs, although training loss was still going lower, validation loss stopped improving, so training
+was stopped with following metrics:</p>
+
+<p>Training loss: <strong>0.9257</strong><br>
+Validation loss: <strong>1.258</strong></p>
+
+<p>(TODO: include graphs from W&amp;B)</p>
+
+<p>Model performance using videos from validation dataset (green is true steering angle and red is predicted steering angle):</p>
+<blockquote>
+  <p>youtube: https://youtu.be/iR3qkDQD_Pk
+youtube: https://youtu.be/p1wjzHW8HCY</p>
+</blockquote>
+
+<h4 id="data-balancing">
+<a class="anchor" href="#data-balancing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data balancing</h4>
+
+<p>Driving data is very unbalanche, most driving is done straigh or with very small steering angle. This can be seen also
+in Comma AI dataset:</p>
+
+<p>TODO: pic with steering angle</p>
+
+<p>This presents problem for training neural network as it will be biased to predict small degrees and underpredict bigger
+steering angles. I test with two balanced datasets, but these did not improve results and something more clever needs to
+be done to remove the bias.</p>
+
+<p>TODO: pics of balanced steering angles.</p>
+
+<h2 id="visualisation-of-network-state">
+<a class="anchor" href="#visualisation-of-network-state" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualisation of network state</h2>
+<p><a href="https://arxiv.org/abs/1610.02391">Grad-CAM</a> paper introduces technique for producing “visual explanations” for decisions
+from a large class of CNN-based models. There is great <a href="https://github.com/jacobgil/pytorch-grad-cam">pytorch implementation</a>
+implemention for class prediction, which I modified to work with regression problem to display activation maps.</p>
+
+<p>First layer seems to provides best information. Model seems to be mostly concentrating on road markings, ground under
+other cars and sides of the road:</p>
+<blockquote>
+  <p>youtube: https://youtu.be/hlQyDc7xGMc</p>
+</blockquote>
+
+<h2 id="learnings">
+<a class="anchor" href="#learnings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Learnings</h2>
+<ul>
+  <li>Most effort will go preparing data pipeline and not tuning model itself</li>
+  <li>Gradient based visualisation can provide insights into how model works</li>
+</ul>
+
+<h2 id="conclusions">
+<a class="anchor" href="#conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions</h2>
+
+<h2 id="references">
+<a class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
+
+<p>1 Pilotnet https://arxiv.org/abs/1604.07316</p>
 
   </div><a class="u-url" href="/ai-blog/markdown/2020/06/14/lane-following.html" hidden></a>
 </article>
