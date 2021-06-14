@@ -8,10 +8,6 @@ title: End-to-end Driving using Comma AI dataset
 
 # Part 1: End-to-end Driving using Comma AI dataset
 
-This is the first post in the series of posts on the topic of end-to-end model for autonomous driving. Future posts:
-- Part 2: Using PilotNet model in real car on Estonian gravel roads
-- Part 3: Using Vision Transformers with Comma AI dataset
-
 ## Introduction
 
 In this project I will use imitation learning to teach artificial neural network to drive the car end-to-end. Model will
@@ -22,8 +18,12 @@ from camera image.
 
 ![EndToEnd]({{ site.baseurl }}/images/lanefollowing/end-to-end-learning.jpg "Credit: https://twitter.com/haltakov/status/1384192583597912065")
 
-**Imitation learning** is supervised learning, where model is trained to mimic human behaviour. In this project model is trained
+**Imitation learning** is supervised learning, where model is trained to mimic the human behaviour. In this project model is trained
 to predict how human is steering the car on highways.
+
+This is the first post in the series of posts on the topic of end-to-end model for autonomous driving. Future posts:
+- Part 2: Using PilotNet model in real car on Estonian gravel roads
+- Part 3: Using Vision Transformers with Comma AI dataset
 
 ## Data
 
