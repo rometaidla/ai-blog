@@ -286,11 +286,16 @@ to get more valid comparison, several runs should be made to see the variability
 from a large class of CNN-based models. There is great <a href="https://github.com/jacobgil/pytorch-grad-cam">pytorch implementation</a>
 implemention for class prediction, which I modified to work with regression problem to display activation maps.</p>
 
+<p><img src="/ai-blog/images/lanefollowing/gradcam_layers.png" alt="Gradcam layers" title="Gradcam++ activation maps"></p>
+
 <p>First layer seems to provides best information. Model seems to be mostly concentrating on road markings, ground under
 other cars and sides of the road:</p>
 <blockquote>
-  <p>youtube: https://youtu.be/hlQyDc7xGMc</p>
+  <figure class="video_container">
+</figure>
 </blockquote>
+<iframe width="840" height="550" src="https://www.youtube.com/embed/hlQyDc7xGMc?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+<p>&lt;/figure&gt;</p>
 
 <h2 id="conclusions">
 <a class="anchor" href="#conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions</h2>
