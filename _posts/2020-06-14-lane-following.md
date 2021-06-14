@@ -28,7 +28,7 @@ Video resolution is 1164x874. When extracting frames for training, image is down
 faster training process. From this downscaled image, smaller region of interest is cropped as most of the image does not
 in include information useful for training, like trees and sky.
 
-![RegionOfInterest]({{ site.baseurl }}/images/lanefollowing/crop.png "Region of interest used for training is marked with red box.")
+![RegionOfInterest]({{ site.baseurl }}/images/lanefollowing/roi.png "Region of interest used for training is marked with red box.")
 
 Comma AI dataset contains a small sample of very difficult situations like crossroads, which are impossible to predict
 correctly using just camera images as model has no clear information whether to turn left or right. Most of these cases
