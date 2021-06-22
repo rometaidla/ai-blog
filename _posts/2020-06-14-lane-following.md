@@ -40,7 +40,6 @@ Comma AI dataset contains a small sample of very difficult situations like cross
 correctly using just camera images as model has no clear information whether to turn left or right. Most of these cases
 have high steering angle and make it very hard for model to converge (especially with using MSE loss). To avoid manually
 going through hours of videos, all frames with steering angle bigger than 20 degrees are removed from dataset.
-(TODO: include exact counts of frames removed)
 
 ### Model
 Convolutional neural network have been most succesful architectures in computer vision and it is natural choice for lane
@@ -51,7 +50,6 @@ following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet [
 I used Batch normalisation instead of first static normalisation layer as I found it made training more stable,
 model trained quicker and had less variability in epochs validation losses. Also Leaky ReLU is used as activation
 function for layers.
-
 ### Training
 
 Big effort was needed to speed up training speed as training on video files is very slow, this is magnified with the need
