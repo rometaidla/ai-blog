@@ -148,8 +148,7 @@ in include information useful for training, like trees and sky.</p>
 <p>Comma AI dataset contains a small sample of very difficult situations like crossroads, which are impossible to predict
 correctly using just camera images as model has no clear information whether to turn left or right. Most of these cases
 have high steering angle and make it very hard for model to converge (especially with using MSE loss). To avoid manually
-going through hours of videos, all frames with steering angle bigger than 20 degrees are removed from dataset.
-(TODO: include exact counts of frames removed)</p>
+going through hours of videos, all frames with steering angle bigger than 20 degrees are removed from dataset.</p>
 
 <h3 id="model">
 <a class="anchor" href="#model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model</h3>
@@ -161,7 +160,6 @@ following. NVIDIA used CNN architecture in their DAVE-2 system called PilotNet [
 <p>I used Batch normalisation instead of first static normalisation layer as I found it made training more stable,
 model trained quicker and had less variability in epochs validation losses. Also Leaky ReLU is used as activation
 function for layers.</p>
-
 <h3 id="training">
 <a class="anchor" href="#training" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training</h3>
 
